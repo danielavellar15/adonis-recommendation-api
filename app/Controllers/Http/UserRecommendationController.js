@@ -1,0 +1,93 @@
+'use strict'
+
+/** @typedef {import('@adonisjs/framework/src/Request')} Request */
+/** @typedef {import('@adonisjs/framework/src/Response')} Response */
+/** @typedef {import('@adonisjs/framework/src/View')} View */
+
+/**
+ * Resourceful controller for interacting with userrecommendations
+ */
+class UserRecommendationController {
+  /**
+   * Show a list of all userrecommendations.
+   * GET userrecommendations
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async index ({ request, response, view }) {
+  }
+
+  /**
+   * Render a form to be used for creating a new userrecommendation.
+   * GET userrecommendations/create
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async create ({ request, response, view }) {
+  }
+
+  /**
+   * Create/save a new userrecommendation.
+   * POST userrecommendations
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async store ({ request, response }) {
+  }
+
+  /**
+   * Display a single userrecommendation.
+   * GET userrecommendations/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async show ({ params, request, response, view }) {
+  }
+
+  /**
+   * Render a form to update an existing userrecommendation.
+   * GET userrecommendations/:id/edit
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   * @param {View} ctx.view
+   */
+  async edit ({ params, request, response, view }) {
+  }
+
+  /**
+   * Update userrecommendation details.
+   * PUT or PATCH userrecommendations/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async update ({ params, request, response }) {
+  }
+
+  /**
+   * Delete a userrecommendation with id.
+   * DELETE userrecommendations/:id
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async destroy ({ params, request, response }) {
+  }
+}
+
+module.exports = UserRecommendationController

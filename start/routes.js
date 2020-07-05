@@ -17,5 +17,9 @@
 const Route = use("Route");
 
 Route.get("/", () => {
-  return { greeting: "Hello world in JSON Daniel" };
+  return { greeting: "Hello world in JSON Daniels" };
 });
+
+Route.post("/users", "UserController.create");
+
+Route.post("/sessions", "SessionController.create");
