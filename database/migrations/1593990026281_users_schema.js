@@ -3,10 +3,9 @@
 /** @type {import('@adonisjs/lucid/src/Schema')} */
 const Schema = use("Schema");
 
-class UserRecommendationSchema extends Schema {
+class UsersSchema extends Schema {
   up() {
-    this.create("user_recommendations", (table) => {
-      table.increments();
+    this.table("users", (table) => {
       table
         .integer("recommendation_system_id")
         .unsigned()
@@ -14,13 +13,14 @@ class UserRecommendationSchema extends Schema {
         .inTable("recommendation_systems")
         .onUpdate("CASCADE")
         .onDelete("RESTRICT");
-      table.timestamps();
     });
   }
 
   down() {
-    this.drop("user_recommendations");
+    this.table("users", (table) => {
+      // reverse alternations
+    });
   }
 }
 
-module.exports = UserRecommendationSchema;
+module.exports = UsersSchema;
