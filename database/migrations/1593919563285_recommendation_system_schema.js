@@ -7,6 +7,7 @@ class RecommendationSystemSchema extends Schema {
   up() {
     this.create("recommendation_systems", (table) => {
       table.increments();
+      table.string("descricao").notNullable();
       table.timestamps();
     });
   }

@@ -16,9 +16,13 @@
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use("Route");
 
-Route.get("/", () => {
-  return { greeting: "Hello world in JSON Daniels" };
-});
+// Route.get("/", () => {
+//   return { greeting: "Hello world in JSON Daniel" };
+// });
+
+Route.resource("recommendationSystem", "RecommendationSystemController")
+  .apiOnly()
+  .middleware("auth");
 
 Route.post("/users", "UserController.create");
 
