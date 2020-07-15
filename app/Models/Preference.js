@@ -10,6 +10,19 @@ class Preference extends Model {
   ratings() {
     return this.hasMany("App/Models/Rating");
   }
+
+  //Commands
+  store() {
+    //save object
+  }
+
+  update() {
+    //update object
+  }
+
+  remove() {
+    // remove object
+  }
 }
 
 module.exports = Preference;

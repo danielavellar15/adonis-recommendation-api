@@ -13,6 +13,19 @@ class RecommendationSystem extends Model {
   usersRecommendation() {
     return this.hasMany("App/Models/UserRecommendation");
   }
+
+  //Commands
+  store() {
+    //save object
+  }
+
+  update() {
+    //update object
+  }
+
+  remove() {
+    // remove object
+  }
 }
 
 module.exports = RecommendationSystem;

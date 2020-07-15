@@ -1,5 +1,7 @@
 "use strict";
 
+const Drive = use("Drive");
+
 const RecommendationSystem = use("App/Models/RecommendationSystem");
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
@@ -30,7 +32,7 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ auth, request, response }) {
+  async store({ request, response }) {
     const data = request.only(["description"]);
 
     const recommendation_system = await RecommendationSystem.create({
@@ -70,6 +72,23 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request, response }) {}
+
+  /**
+   * import data in recommendationsystem.
+   * POST recommendationsystems/import
+   *
+   * @param {object} ctx
+   * @param {Request} ctx.request
+   * @param {Response} ctx.response
+   */
+  async import({ params, request, response }) {
+    const recommendation_system = RecommendationSystem.findOrFail(params.id);
+    const ratings = await Drive.get(
+      `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`
+    );
+
+    return ratings;
+  }
 }
 
 module.exports = RecommendationSystemController;

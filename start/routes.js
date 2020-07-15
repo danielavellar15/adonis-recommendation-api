@@ -20,10 +20,18 @@ const Route = use("Route");
 //   return { greeting: "Hello world in JSON Daniel" };
 // });
 
+/* Recommendation System Routes */
 Route.resource("recommendationSystem", "RecommendationSystemController")
   .apiOnly()
   .middleware("auth");
 
+Route.post(
+  "recommendationSystem/:id/import",
+  "RecommendationSystemController.import"
+).middleware("auth");
+
+/* User Routes */
 Route.post("/users", "UserController.create");
 
+/* Session Routes */
 Route.post("/sessions", "SessionController.create");
