@@ -4,8 +4,8 @@
 const Model = use("Model");
 
 class Rating extends Model {
-  itens() {
-    return this.belongsTo("App/Models/Iten");
+  items() {
+    return this.belongsTo("App/Models/Item");
   }
   preferences() {
     return this.belongsTo("App/Models/Preference");
@@ -13,6 +13,8 @@ class Rating extends Model {
   usersRecommendation() {
     return this.belongsTo("App/Models/UserRecommendation");
   }
+
+  constructor() {}
 
   //Commands
   store() {

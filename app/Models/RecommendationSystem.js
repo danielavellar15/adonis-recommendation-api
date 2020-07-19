@@ -4,8 +4,8 @@
 const Model = use("Model");
 
 class RecommendationSystem extends Model {
-  itens() {
-    return this.hasMany("App/Models/Iten");
+  items() {
+    return this.hasMany("App/Models/Item");
   }
   preferences() {
     return this.hasMany("App/Models/Preference");

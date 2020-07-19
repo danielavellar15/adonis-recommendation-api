@@ -4,7 +4,7 @@
 const Model = use("Model");
 const Database = use("Database");
 
-class UserRecommendation extends Model {
+class Item extends Model {
   recommendationSystem() {
     return this.belongsTo("App/Models/RecommendationSystem");
   }
@@ -12,16 +12,19 @@ class UserRecommendation extends Model {
     return this.hasMany("App/Models/Rating");
   }
 
-  constructor(id_origin, recommendation_system_id) {
+  constructor(id_origin, recommendation_system_id, description) {
     super();
-    this.id_origin = id_origin;
     this.recommendation_system_id = recommendation_system_id;
+    this.description = description;
+    this.id_origin = id_origin;
   }
 
   //Commands
   async store() {
+    //save object
+    //TODO: validation
     this._setCreatedAt(this.$attributes);
-    return await Database.table("user_recommendations")
+    return await Database.table("itens")
       .insert(this.$attributes)
       .returning("id");
   }
@@ -35,4 +38,4 @@ class UserRecommendation extends Model {
   }
 }
 
-module.exports = UserRecommendation;
+module.exports = Item;

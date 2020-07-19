@@ -1,6 +1,12 @@
 "use strict";
 
 const Drive = use("Drive");
+const file = require("file-system");
+const csv = require("csvtojson");
+const _ = require("underscore");
+const UserRecommendation = require("../../Models/UserRecommendation");
+const Rating = require("../../Models/Rating");
+const Item = require("../../Models/Item");
 
 const RecommendationSystem = use("App/Models/RecommendationSystem");
 
@@ -82,12 +88,53 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    */
   async import({ params, request, response }) {
-    const recommendation_system = RecommendationSystem.findOrFail(params.id);
-    const ratings = await Drive.get(
-      `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`
+    var csv_list = [];
+
+    const recommendation_system = await RecommendationSystem.findOrFail(
+      params.id
     );
 
-    return ratings;
+    const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
+
+    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 10);
+
+    //insert users
+    const users = _.uniq(
+      jsonArray.map((x) => {
+        return x["userId"];
+      })
+    );
+
+    for (const userId of users) {
+      const user = new UserRecommendation(userId, recommendation_system.id);
+      const result = await user.store();
+
+      if (!result) {
+        console.log("result :>> ", result);
+      }
+    }
+
+    //insert items
+    const items = _.uniq(
+      jsonArray.map((x) => {
+        return x["movieId"];
+      })
+    );
+
+    for (const itemId of items) {
+      const item = new Item(itemId, recommendation_system.id, "");
+      const result = await item.store();
+
+      if (!result) {
+        console.log("result :>> ", result);
+      }
+    }
+
+    for (const recommendation of jsonArray) {
+      const
+    }
+
+    return items.length;
   }
 }
 
