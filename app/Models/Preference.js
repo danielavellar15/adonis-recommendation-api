@@ -11,6 +11,12 @@ class Preference extends Model {
     return this.hasMany("App/Models/Rating");
   }
 
+  constructor(value, recommendation_system_id) {
+    super();
+    this.value = value;
+    this.recommendation_system_id = recommendation_system_id;
+  }
+
   //Commands
   store() {
     //save object

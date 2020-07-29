@@ -20,10 +20,11 @@ class UserRecommendation extends Model {
 
   //Commands
   async store() {
-    this._setCreatedAt(this.$attributes);
-    return await Database.table("user_recommendations")
-      .insert(this.$attributes)
-      .returning("id");
+    // this._setCreatedAt(this.$attributes);
+    // return await Database.table("user_recommendations")
+    //   .insert(this.$attributes)
+    //   .returning("id");
+    return this.save();
   }
 
   update() {

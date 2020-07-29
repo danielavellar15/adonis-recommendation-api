@@ -14,7 +14,12 @@ class Rating extends Model {
     return this.belongsTo("App/Models/UserRecommendation");
   }
 
-  constructor() {}
+  constructor(usersRecommendation, preferences, items) {
+    super();
+    this.usersRecommendation = usersRecommendation;
+    this.preferences = preferences;
+    this.items = items;
+  }
 
   //Commands
   store() {

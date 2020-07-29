@@ -1,12 +1,15 @@
 "use strict";
 
+const _ = require("underscore");
+const csv = require("csvtojson");
+const Database = use("Database");
 const Drive = use("Drive");
 const file = require("file-system");
-const csv = require("csvtojson");
-const _ = require("underscore");
-const UserRecommendation = require("../../Models/UserRecommendation");
-const Rating = require("../../Models/Rating");
-const Item = require("../../Models/Item");
+
+const UserRecommendation = use("App/Models/UserRecommendation");
+const Preference = use("App/Models/Preference");
+const Rating = use("App/Models/Rating");
+const Item = use("App/Models/Item");
 
 const RecommendationSystem = use("App/Models/RecommendationSystem");
 
@@ -96,7 +99,19 @@ class RecommendationSystemController {
 
     const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
 
-    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 10);
+    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 1);
+
+    // for (const recommendation of jsonArray) {
+    //   const { userId, movieId, rating } = recommendation;
+    //   const user = new UserRecommendation(userId, recommendation_system.id);
+    //   user.save();
+    //   const item = new Item(movieId, recommendation_system.id, "");
+    //   item.save();
+    //   const preference = new Preference(rating, recommendation_system.id);
+    //   preference.save();
+    //   const ratingClass = new Rating(user.id, item.id, preference.id);
+    //   ratingClass.save();
+    // }
 
     //insert users
     const users = _.uniq(
@@ -104,37 +119,28 @@ class RecommendationSystemController {
         return x["userId"];
       })
     );
-
     for (const userId of users) {
       const user = new UserRecommendation(userId, recommendation_system.id);
       const result = await user.store();
-
       if (!result) {
         console.log("result :>> ", result);
       }
     }
-
     //insert items
     const items = _.uniq(
       jsonArray.map((x) => {
         return x["movieId"];
       })
     );
-
     for (const itemId of items) {
       const item = new Item(itemId, recommendation_system.id, "");
       const result = await item.store();
-
       if (!result) {
         console.log("result :>> ", result);
       }
     }
 
-    for (const recommendation of jsonArray) {
-      const
-    }
-
-    return items.length;
+    return jsonArray.length;
   }
 }
 
