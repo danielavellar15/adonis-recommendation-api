@@ -7,11 +7,13 @@ class RecommendationSystem extends Model {
   items() {
     return this.hasMany("App/Models/Item");
   }
-  preferences() {
-    return this.hasMany("App/Models/Preference");
-  }
+
   usersRecommendation() {
     return this.hasMany("App/Models/UserRecommendation");
+  }
+
+  preferenceGroup() {
+    return this.belongsTo("App/Models/PreferenceGroup");
   }
 
   //Commands

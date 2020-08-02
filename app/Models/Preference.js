@@ -4,17 +4,17 @@
 const Model = use("Model");
 
 class Preference extends Model {
-  recommendationSystem() {
-    return this.belongsTo("App/Models/RecommendationSystem");
+  preferenceGroup() {
+    return this.belongsTo("App/Models/PreferenceGroup");
   }
   ratings() {
     return this.hasMany("App/Models/Rating");
   }
 
-  constructor(value, recommendation_system_id) {
+  constructor(value, preferenceGroup) {
     super();
     this.value = value;
-    this.recommendation_system_id = recommendation_system_id;
+    this.preferenceGroup = preferenceGroup;
   }
 
   //Commands
