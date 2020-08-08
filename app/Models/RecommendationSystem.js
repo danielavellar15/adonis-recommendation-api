@@ -16,9 +16,15 @@ class RecommendationSystem extends Model {
     return this.belongsTo("App/Models/PreferenceGroup");
   }
 
+  constructor(description) {
+    super();
+    this.description = description;
+  }
+
   //Commands
   store() {
     //save object
+    this.save();
   }
 
   update() {

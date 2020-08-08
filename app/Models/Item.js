@@ -23,10 +23,7 @@ class Item extends Model {
   async store() {
     //save object
     //TODO: validation
-    this._setCreatedAt(this.$attributes);
-    return await Database.table("itens")
-      .insert(this.$attributes)
-      .returning("id");
+    this.save();
   }
 
   update() {

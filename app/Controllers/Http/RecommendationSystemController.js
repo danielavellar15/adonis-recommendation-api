@@ -1,10 +1,10 @@
 "use strict";
 
-const _ = require("underscore");
-const csv = require("csvtojson");
+const _ = use("underscore");
+const csv = use("csvtojson");
 const Database = use("Database");
 const Drive = use("Drive");
-const file = require("file-system");
+const PreferenceGroup = use("App/Models/PreferenceGroup");
 
 const UserRecommendation = use("App/Models/UserRecommendation");
 const Preference = use("App/Models/Preference");
@@ -43,10 +43,27 @@ class RecommendationSystemController {
    */
   async store({ request, response }) {
     const data = request.only(["description"]);
+    const { description } = data;
 
-    const recommendation_system = await RecommendationSystem.create({
-      ...data,
-    });
+    const recommendation_system = new RecommendationSystem(description);
+    recommendation_system.store();
+
+    const preferenceGroupType = "star";
+    const preferenceGroup = new PreferenceGroup(
+      recommendation_system.id,
+      preferenceGroupType
+    );
+    preferenceGroup.store();
+
+    const preferences = [1, 2, 3, 4, 5];
+    for (const value of preferences) {
+      const preference = new Preference(
+        preferenceGroup.Id,
+        value.toString(),
+        value
+      );
+      preference.save();
+    }
 
     return recommendation_system;
   }
@@ -99,19 +116,10 @@ class RecommendationSystemController {
 
     const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
 
-    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 1);
+    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 5);
 
-    // for (const recommendation of jsonArray) {
-    //   const { userId, movieId, rating } = recommendation;
-    //   const user = new UserRecommendation(userId, recommendation_system.id);
-    //   user.save();
-    //   const item = new Item(movieId, recommendation_system.id, "");
-    //   item.save();
-    //   const preference = new Preference(rating, recommendation_system.id);
-    //   preference.save();
-    //   const ratingClass = new Rating(user.id, item.id, preference.id);
-    //   ratingClass.save();
-    // }
+    var usersIds = [];
+    var itemsIds = [];
 
     //insert users
     const users = _.uniq(
@@ -119,22 +127,27 @@ class RecommendationSystemController {
         return x["userId"];
       })
     );
+
     for (const userId of users) {
       const user = new UserRecommendation(userId, recommendation_system.id);
       const result = await user.store();
+      usersIds[userId] = user.id;
       if (!result) {
         console.log("result :>> ", result);
       }
     }
+
     //insert items
     const items = _.uniq(
       jsonArray.map((x) => {
         return x["movieId"];
       })
     );
+
     for (const itemId of items) {
       const item = new Item(itemId, recommendation_system.id, "");
       const result = await item.store();
+      itemsIds[itemId] = item.id;
       if (!result) {
         console.log("result :>> ", result);
       }

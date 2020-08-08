@@ -14,11 +14,11 @@ class Rating extends Model {
     return this.belongsTo("App/Models/UserRecommendation");
   }
 
-  constructor(usersRecommendation, preferences, items) {
+  constructor(user_recommendation_id, preference_id, iten_id) {
     super();
-    this.usersRecommendation = usersRecommendation;
-    this.preferences = preferences;
-    this.items = items;
+    this.user_recommendation_id = user_recommendation_id;
+    this.preference_id = preference_id;
+    this.iten_id = iten_id;
   }
 
   //Commands

@@ -11,6 +11,27 @@ class PreferenceGroup extends Model {
   preferences() {
     return this.hasMany("App/Models/Preference");
   }
+
+  constructor(recommendation_system_id, value) {
+    super();
+    this.recommendation_system_id = recommendation_system_id;
+    this.value = value;
+  }
+
+  async store() {
+    //TODO: validation
+    this.save();
+  }
+
+  update() {
+    //update object
+  }
+
+  remove() {
+    // remove object
+  }
 }
+
+//Commands
 
 module.exports = PreferenceGroup;
