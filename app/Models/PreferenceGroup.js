@@ -19,8 +19,8 @@ class PreferenceGroup extends Model {
   }
 
   async store() {
-    //TODO: validation
-    this.save();
+    //TODO: validation (apenas um sistema de recomendacao)
+    await this.save();
   }
 
   update() {

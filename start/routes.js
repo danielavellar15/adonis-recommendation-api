@@ -26,7 +26,7 @@ Route.resource("recommendationSystem", "RecommendationSystemController")
   .middleware("auth");
 
 Route.post(
-  "recommendationSystem/:id/import",
+  "recommendationSystem/import",
   "RecommendationSystemController.import"
 ).middleware("auth");
 

@@ -20,11 +20,16 @@ class UserRecommendation extends Model {
 
   //Commands
   async store() {
-    // this._setCreatedAt(this.$attributes);
-    // return await Database.table("user_recommendations")
-    //   .insert(this.$attributes)
-    //   .returning("id");
-    return this.save();
+    const user = await this.userRecommendationExist(
+      this.recommendation_system_id,
+      this.id_origin
+    );
+    if (!user) {
+      return await this.save();
+    } else {
+      this.id = user.id;
+      return false;
+    }
   }
 
   update() {
@@ -33,6 +38,16 @@ class UserRecommendation extends Model {
 
   remove() {
     // remove object
+  }
+
+  //Validations
+  async userRecommendationExist(recommendation_system_id, id_origin) {
+    return await Database.from("user_recommendations")
+      .where({
+        recommendation_system_id: recommendation_system_id,
+        id_origin: id_origin,
+      })
+      .first();
   }
 }
 

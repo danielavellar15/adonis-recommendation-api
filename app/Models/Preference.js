@@ -19,9 +19,9 @@ class Preference extends Model {
   }
 
   //Commands
-  store() {
+  async store() {
     //save object
-    this.save();
+    await this.save();
   }
 
   update() {
