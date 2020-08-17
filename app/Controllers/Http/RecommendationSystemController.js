@@ -3,8 +3,8 @@
 const _ = use("underscore");
 const csv = use("csvtojson");
 const Database = use("Database");
-const Drive = use("Drive");
 const PreferenceGroup = use("App/Models/PreferenceGroup");
+const { validate } = use("Validator");
 
 const UserRecommendation = use("App/Models/UserRecommendation");
 const Preference = use("App/Models/Preference");
@@ -12,6 +12,10 @@ const Rating = use("App/Models/Rating");
 const Item = use("App/Models/Item");
 const PreferenceService = use("App/Service/PreferenceService");
 const PreferenceGroupService = use("App/Service/PreferenceGroupService");
+const ItemService = use("App/Service/ItemService");
+const RecommendationSystemService = use(
+  "App/Service/RecommendationSystemService"
+);
 
 const RecommendationSystem = use("App/Models/RecommendationSystem");
 
@@ -110,10 +114,20 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    */
   async import({ request, response }) {
+    const rules = {
+      recommendation_system_id: "required",
+    };
+
+    const validation = await validate(request.all(), rules);
+
+    if (validation.fails()) {
+      return validation.messages();
+    }
+
     var csv_list = [];
 
     const recommendation_system = await RecommendationSystem.findOrFail(
-      request.body.id
+      request.body.recommendation_system_id
     );
 
     const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
@@ -178,6 +192,35 @@ class RecommendationSystemController {
     }
 
     return json_array.length;
+  }
+
+  async getRecommendationsItem({ request, response }) {
+    const rules = {
+      item_id: "required",
+      recommendation_system_id: "required",
+    };
+
+    const validation = await validate(request.all(), rules);
+
+    if (validation.fails()) {
+      return validation.messages();
+    }
+
+    const { item_id, recommendation_system_id } = request.body;
+
+    const item = await ItemService.getItemById(
+      item_id,
+      recommendation_system_id
+    );
+
+    if (item) {
+      const items_recommended = await RecommendationSystemService.getRecommendationItem(
+        recommendation_system_id
+      );
+      return items_recommended;
+    }
+
+    return null;
   }
 }
 
