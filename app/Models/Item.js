@@ -21,9 +21,16 @@ class Item extends Model {
 
   //Commands
   async store() {
-    //save object
-    //TODO: validation
-    this.save();
+    const item = await this.itemExist(
+      this.recommendation_system_id,
+      this.id_origin
+    );
+    if (!item) {
+      return await this.save();
+    } else {
+      this.id = item.id;
+      return false;
+    }
   }
 
   update() {
@@ -32,6 +39,16 @@ class Item extends Model {
 
   remove() {
     // remove object
+  }
+
+  //Validations
+  async itemExist(recommendation_system_id, id_origin) {
+    return await Database.from("items")
+      .where({
+        recommendation_system_id: recommendation_system_id,
+        id_origin: id_origin,
+      })
+      .first();
   }
 }
 

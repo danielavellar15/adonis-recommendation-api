@@ -3,13 +3,19 @@
 const _ = use("underscore");
 const csv = use("csvtojson");
 const Database = use("Database");
-const Drive = use("Drive");
 const PreferenceGroup = use("App/Models/PreferenceGroup");
+const { validate } = use("Validator");
 
 const UserRecommendation = use("App/Models/UserRecommendation");
 const Preference = use("App/Models/Preference");
 const Rating = use("App/Models/Rating");
 const Item = use("App/Models/Item");
+const PreferenceService = use("App/Service/PreferenceService");
+const PreferenceGroupService = use("App/Service/PreferenceGroupService");
+const ItemService = use("App/Service/ItemService");
+const RecommendationSystemService = use(
+  "App/Service/RecommendationSystemService"
+);
 
 const RecommendationSystem = use("App/Models/RecommendationSystem");
 
@@ -106,31 +112,41 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async import({ params, request, response }) {
+  async import({ request, response }) {
+    const rules = {
+      recommendation_system_id: "required",
+    };
+
+    const validation = await validate(request.all(), rules);
+
+    if (validation.fails()) {
+      return validation.messages();
+    }
+
     var csv_list = [];
 
     const recommendation_system = await RecommendationSystem.findOrFail(
-      params.id
+      request.body.recommendation_system_id
     );
 
     const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
 
-    const jsonArray = await (await csv().fromFile(csv_url)).slice(0, 5);
+    const json_array = await await csv().fromFile(csv_url);
 
-    var usersIds = [];
-    var itemsIds = [];
+    var users_ids = [];
+    var items_ids = [];
 
     //insert users
     const users = _.uniq(
-      jsonArray.map((x) => {
+      json_array.map((x) => {
         return x["userId"];
       })
     );
 
-    for (const userId of users) {
-      const user = new UserRecommendation(userId, recommendation_system.id);
+    for (const user_id of users) {
+      const user = new UserRecommendation(user_id, recommendation_system.id);
       const result = await user.store();
-      usersIds[userId] = user.id;
+      users_ids[user_id] = user.id;
       if (!result) {
         console.log("result :>> ", result);
       }
@@ -138,21 +154,74 @@ class RecommendationSystemController {
 
     //insert items
     const items = _.uniq(
-      jsonArray.map((x) => {
+      json_array.map((x) => {
         return x["movieId"];
       })
     );
 
-    for (const itemId of items) {
-      const item = new Item(itemId, recommendation_system.id, "");
+    for (const item_id of items) {
+      const item = new Item(item_id, recommendation_system.id, "");
       const result = await item.store();
-      itemsIds[itemId] = item.id;
+      items_ids[item_id] = item.id;
       if (!result) {
         console.log("result :>> ", result);
       }
     }
 
-    return jsonArray.length;
+    const preference_group =
+      await PreferenceGroupService.getPreferenceGroupByRecommendationSystem(
+        recommendation_system.id
+      );
+
+    const preferences = await PreferenceService.getPreferencesByPreferenceGroup(
+      preference_group.id
+    );
+
+    let preference_hash = [];
+    for (const preference of preferences) {
+      preference_hash[preference.value.toString()] = preference.id;
+    }
+
+    for (const item_rating of json_array) {
+      const user_recommendation_id = users_ids[item_rating["userId"]];
+      const preference_id = preference_hash[parseInt(item_rating["rating"])];
+      const item_id = items_ids[item_rating["movieId"]];
+
+      const rating = new Rating(user_recommendation_id, preference_id, item_id);
+      const result = await rating.store();
+    }
+
+    return json_array.length;
+  }
+
+  async getRecommendationsItem({ request, response }) {
+    const rules = {
+      item_id: "required",
+      recommendation_system_id: "required",
+    };
+
+    const validation = await validate(request.all(), rules);
+
+    if (validation.fails()) {
+      return validation.messages();
+    }
+
+    const { item_id, recommendation_system_id } = request.body;
+
+    const item = await ItemService.getItemById(
+      item_id,
+      recommendation_system_id
+    );
+
+    if (item) {
+      const items_recommended =
+        await RecommendationSystemService.getRecommendationItem(
+          recommendation_system_id
+        );
+      return items_recommended;
+    }
+
+    return null;
   }
 }
 
