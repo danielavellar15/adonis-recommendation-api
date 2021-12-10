@@ -43,26 +43,25 @@ class RecommendationSystemController {
    */
   async store({ request, response }) {
     const data = request.only(["description"]);
-    const { description } = data;
+    const recommendation_system = await RecommendationSystem.create(...data);
 
-    const recommendation_system = new RecommendationSystem(description);
-    recommendation_system.store();
-
-    const preferenceGroupType = "star";
-    const preferenceGroup = new PreferenceGroup(
-      recommendation_system.id,
-      preferenceGroupType
+    const value = "star";
+    const recommendation_system_id = recommendation_system.id;
+    const preference_group_data = { value, recommendation_system_id };
+    const preferenceGroup = await PreferenceGroup.create(
+      recommendation_system_id,
+      value
     );
-    preferenceGroup.store();
 
     const preferences = [1, 2, 3, 4, 5];
     for (const value of preferences) {
-      const preference = new Preference(
+      const preference_data = new Preference(
         preferenceGroup.Id,
         value.toString(),
         value
       );
-      preference.save();
+
+      const preference = await Preference.create(preference_data);
     }
 
     return recommendation_system;
