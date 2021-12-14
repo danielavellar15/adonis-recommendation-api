@@ -49,11 +49,10 @@ class RecommendationSystemController {
    */
   async store({ request, response }) {
     const data = request.only(["description"]);
-    const recommendation_system = await RecommendationSystem.create(...data);
+    const recommendation_system = await RecommendationSystem.create(data);
 
     const value = "star";
     const recommendation_system_id = recommendation_system.id;
-    const preference_group_data = { value, recommendation_system_id };
     const preferenceGroup = await PreferenceGroup.create(
       recommendation_system_id,
       value
