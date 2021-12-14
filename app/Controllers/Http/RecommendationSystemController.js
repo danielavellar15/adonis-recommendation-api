@@ -53,18 +53,19 @@ class RecommendationSystemController {
 
     const value = "star";
     const recommendation_system_id = recommendation_system.id;
-    const preferenceGroup = await PreferenceGroup.create(
-      recommendation_system_id,
-      value
-    );
+
+    const preferenceGroup = await PreferenceGroup.create({
+      recommendation_system_id: recommendation_system_id,
+      value: value,
+    });
 
     const preferences = [1, 2, 3, 4, 5];
     for (const value of preferences) {
-      const preference_data = new Preference(
-        preferenceGroup.Id,
-        value.toString(),
-        value
-      );
+      const preference_data = {
+        preference_group_id: preferenceGroup.id,
+        name: value.toString(),
+        value: value,
+      };
 
       const preference = await Preference.create(preference_data);
     }
