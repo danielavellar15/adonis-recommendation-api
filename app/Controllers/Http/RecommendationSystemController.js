@@ -36,7 +36,10 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request, response, view }) {}
+  async index({ request, response, view }) {
+    console.log(`request`, request);
+    return true;
+  }
 
   /**
    * Create/save a new recommendationsystem.
@@ -48,10 +51,13 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    */
   async store({ request, response }) {
-    const data = request.only(["description"]);
-    const recommendation_system = await RecommendationSystem.create(data);
+    const data = request.only(["description", "preference"]);
+    const recommendation_system_data = { description: data.description };
+    const recommendation_system = await RecommendationSystem.create(
+      recommendation_system_data
+    );
 
-    const value = "star";
+    const value = data.preference;
     const recommendation_system_id = recommendation_system.id;
 
     const preferenceGroup = await PreferenceGroup.create({
@@ -59,7 +65,7 @@ class RecommendationSystemController {
       value: value,
     });
 
-    const preferences = [1, 2, 3, 4, 5];
+    const preferences = value == "star" ? [1, 2, 3, 4, 5] : [1, 2];
     for (const value of preferences) {
       const preference_data = {
         preference_group_id: preferenceGroup.id,
@@ -82,7 +88,13 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async show({ params, request, response, view }) {}
+  async show({ params, request, response, view }) {
+    const recommendation_system = await RecommendationSystem.findOrFail(
+      params.id
+    );
+
+    return recommendation_system;
+  }
 
   /**
    * Update recommendationsystem details.
@@ -92,7 +104,19 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async update({ params, request, response }) {}
+  async update({ params, request, response }) {
+    const recommendation_system = await RecommendationSystem.findOrFail(
+      params.id
+    );
+
+    const data = request.only(["description"]);
+
+    recommendation_system.merge(data);
+
+    await recommendation_system.save();
+
+    return recommendation_system;
+  }
 
   /**
    * Delete a recommendationsystem with id.
@@ -102,7 +126,19 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async destroy({ params, request, response }) {}
+  async destroy({ params, request, response }) {
+    const recommendation_system = await RecommendationSystem.findOrFail(
+      params.id
+    );
+
+    // validar se o usuario logado pertence ao sistema de recomendacao
+    // if (recommendation_system.user_id !== auth.user.id) {
+    //   return response.status(401).send({ error: 'Not authorized' })
+    // }
+
+    //deletetar tudo
+    return await recommendation_system.delete();
+  }
 
   /**
    * import data in recommendationsystem.
@@ -113,6 +149,7 @@ class RecommendationSystemController {
    * @param {Response} ctx.response
    */
   async import({ request, response }) {
+    //console.log(`resquest`, resquest);
     const rules = {
       recommendation_system_id: "required",
     };
@@ -123,13 +160,17 @@ class RecommendationSystemController {
       return validation.messages();
     }
 
-    var csv_list = [];
-
     const recommendation_system = await RecommendationSystem.findOrFail(
-      request.body.recommendation_system_id
+      request.body.recommendation_system_id,
+      request.files.file
     );
 
-    const csv_url = `C:\\Users\\danie\\Downloads\\ml-latest-small\\ratings.csv`;
+    if (!recommendation_system)
+      return response
+        .status(404)
+        .send({ error: "Recommendation System Not Found" });
+
+    const csv_url = request._files.file.tmpPath;
 
     const json_array = await await csv().fromFile(csv_url);
 

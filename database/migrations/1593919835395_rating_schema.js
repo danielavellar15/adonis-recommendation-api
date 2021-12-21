@@ -22,10 +22,10 @@ class RatingSchema extends Schema {
         .onUpdate("CASCADE")
         .onDelete("RESTRICT");
       table
-        .integer("iten_id")
+        .integer("item_id")
         .unsigned()
         .references("id")
-        .inTable("itens")
+        .inTable("items")
         .onUpdate("CASCADE")
         .onDelete("RESTRICT");
       table.timestamps();
