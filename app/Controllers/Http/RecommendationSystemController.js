@@ -237,7 +237,6 @@ class RecommendationSystemController {
 
   async getRecommendationsItem({ request, response }) {
     const rules = {
-      item_id: "required",
       recommendation_system_id: "required",
     };
 
@@ -249,12 +248,20 @@ class RecommendationSystemController {
 
     const { item_id, recommendation_system_id } = request.body;
 
-    const item = await ItemService.getItemById(
-      item_id,
-      recommendation_system_id
-    );
+    if (item_id) {
+      const item = await ItemService.getItemById(
+        item_id,
+        recommendation_system_id
+      );
 
-    if (item) {
+      if (item) {
+        const items_recommended =
+          await RecommendationSystemService.getRecommendationItem(
+            recommendation_system_id
+          );
+        return items_recommended;
+      }
+    } else {
       const items_recommended =
         await RecommendationSystemService.getRecommendationItem(
           recommendation_system_id

@@ -33,7 +33,7 @@ Route.post(
 Route.post(
   "recommendationSystem/getRecommendationsItem",
   "RecommendationSystemController.getRecommendationsItem"
-).middleware("auth");
+);
 
 /* User Routes */
 Route.post("/users", "UserController.create");
