@@ -26,4 +26,6 @@ Run the following command to run startup migrations.
 adonis migration:run
 adonis serve --dev
 adonis  make:migration recomendationSystem
+
+adonis make:model Property -m -c
 ```
