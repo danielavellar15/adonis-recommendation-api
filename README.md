@@ -18,9 +18,7 @@ adonis new yardstick --api-only
 
 or manually clone the repo and then run `npm install`.
 
-### Migrations
-
-Run the following command to run startup migrations.
+### Comandos
 
 ```js
 adonis migration:run
@@ -38,4 +36,4 @@ TODOLIST:
 - Token estatico para as funcoes de recomendacao (como no google platform)
 - Criar uma rota que cria um sistema de recomendacao completo pasaando o tipo de avaliacao e retornando o api key
 - criar rota onde é configurado um modelo de recomendacao e escolhido o algoritmo
-  -trocar os ids de sistema de recomendacao pelo token
+- Trocar os ids de sistema de recomendacao pelo token
