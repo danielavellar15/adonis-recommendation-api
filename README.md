@@ -29,3 +29,13 @@ adonis  make:migration recomendationSystem
 
 adonis make:model Property -m -c
 ```
+
+PASSO A PASSO:
+Criar usuario -> criar sistema de recomendacao completo -> importacao ->
+
+TODOLIST:
+
+- Token estatico para as funcoes de recomendacao (como no google platform)
+- Criar uma rota que cria um sistema de recomendacao completo pasaando o tipo de avaliacao e retornando o api key
+- criar rota onde é configurado um modelo de recomendacao e escolhido o algoritmo
+  -trocar os ids de sistema de recomendacao pelo token
