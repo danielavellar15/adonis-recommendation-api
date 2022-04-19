@@ -51,7 +51,7 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ auth, request, response }) {
+  async store({ request, response }) {
     const data = request.only([
       "description",
       "email",
@@ -70,7 +70,8 @@ class RecommendationSystemController {
 
     if (!user) return null;
 
-    const token = await auth.use("api").generate(user);
+    const token =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RlQGVtYWlsLmNvbS5iciIsInBhc3N3b3JkIjoiMTIzNDU2IiwicmVjb21tZW5kYXRpb25TeXN0ZW0iOiJSdXJhbEZsaXgifQ.M03m0-5KUltXepkyWpZVk6CqUFcovU6d5I3Gigw00sM";
 
     const recommendation_system_data = {
       description: data.description,

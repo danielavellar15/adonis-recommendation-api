@@ -21,9 +21,10 @@ const Route = use("Route");
 // });
 
 /* Recommendation System Routes */
-Route.resource("recommendationSystem", "RecommendationSystemController")
-  .apiOnly()
-  .middleware("auth");
+Route.resource(
+  "recommendationSystem",
+  "RecommendationSystemController"
+).apiOnly();
 
 Route.post(
   "recommendationSystem/import",
