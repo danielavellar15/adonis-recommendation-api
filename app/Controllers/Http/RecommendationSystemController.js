@@ -10,6 +10,7 @@ const UserRecommendation = use("App/Models/UserRecommendation");
 const Preference = use("App/Models/Preference");
 const Rating = use("App/Models/Rating");
 const Item = use("App/Models/Item");
+const User = use("App/Models/User");
 const PreferenceService = use("App/Service/PreferenceService");
 const PreferenceGroupService = use("App/Service/PreferenceGroupService");
 const ItemService = use("App/Service/ItemService");
@@ -50,9 +51,31 @@ class RecommendationSystemController {
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async store({ request, response }) {
-    const data = request.only(["description", "preference"]);
-    const recommendation_system_data = { description: data.description };
+  async store({ auth, request, response }) {
+    const data = request.only([
+      "description",
+      "email",
+      "password",
+      "preference",
+    ]);
+
+    const email = data.email;
+    const password = data.password;
+
+    const user = await User.create({
+      username: email,
+      email: email,
+      password: password,
+    });
+
+    if (!user) return null;
+
+    const token = await auth.use("api").generate(user);
+
+    const recommendation_system_data = {
+      description: data.description,
+      token: token,
+    };
     const recommendation_system = await RecommendationSystem.create(
       recommendation_system_data
     );
@@ -76,7 +99,7 @@ class RecommendationSystemController {
       const preference = await Preference.create(preference_data);
     }
 
-    return recommendation_system;
+    return { recommendation_system, userAdmin: user.email };
   }
 
   /**
