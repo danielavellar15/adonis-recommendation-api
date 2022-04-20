@@ -12,6 +12,17 @@ class RecommendationSystemService {
 
     return items;
   }
+
+  static async getRecommendationSystemByToken(token) {
+    console.log("aaaa");
+    const recommendation_system = await Database.from("recommendation_systems")
+      .where({
+        token: token,
+      })
+      .first();
+
+    return recommendation_system;
+  }
 }
 
 module.exports = RecommendationSystemService;

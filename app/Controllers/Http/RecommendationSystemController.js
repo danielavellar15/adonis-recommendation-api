@@ -169,30 +169,22 @@ class RecommendationSystemController {
    * POST recommendationsystems/import
    *
    * @param {object} ctx
+   * @param {Auth} ctx.auth
    * @param {Request} ctx.request
    * @param {Response} ctx.response
    */
-  async import({ request, response }) {
-    //console.log(`resquest`, resquest);
-    const rules = {
-      recommendation_system_id: "required",
-    };
+  async import({ auth, request, response }) {
+    const token = request.headers().authorization.split(" ")[1];
+    if (!token)
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
 
-    const validation = await validate(request.all(), rules);
+    const recommendation_system =
+      await RecommendationSystemService.getRecommendationSystemByToken(token);
 
-    if (validation.fails()) {
-      return validation.messages();
-    }
-
-    const recommendation_system = await RecommendationSystem.findOrFail(
-      request.body.recommendation_system_id,
-      request.files.file
-    );
+    console.log("recommendation_system", recommendation_system);
 
     if (!recommendation_system)
-      return response
-        .status(404)
-        .send({ error: "Recommendation System Not Found" });
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
 
     const csv_url = request._files.file.tmpPath;
 
@@ -207,7 +199,7 @@ class RecommendationSystemController {
         return x["userId"];
       })
     );
-
+    console.log("users", users);
     for (const user_id of users) {
       const user = new UserRecommendation(user_id, recommendation_system.id);
       const result = await user.store();
@@ -256,7 +248,7 @@ class RecommendationSystemController {
       const result = await rating.store();
     }
 
-    return json_array.length;
+    return { imported: json_array.length };
   }
 
   async getRecommendationsItem({ request, response }) {

@@ -29,7 +29,7 @@ Route.resource(
 Route.post(
   "recommendationSystem/import",
   "RecommendationSystemController.import"
-).middleware("auth");
+);
 
 Route.post(
   "recommendationSystem/getRecommendationsItem",
