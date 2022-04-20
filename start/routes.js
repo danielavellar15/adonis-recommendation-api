@@ -36,6 +36,21 @@ Route.post(
   "RecommendationSystemController.getRecommendationsItem"
 );
 
+Route.post(
+  "recommendationSystem/predict",
+  "RecommendationSystemController.predict"
+);
+
+Route.post(
+  "recommendationSystem/recommendByItem",
+  "RecommendationSystemController.recommendByItem"
+);
+
+Route.post(
+  "recommendationSystem/recommendByUser",
+  "RecommendationSystemController.recommendByUser"
+);
+
 /* User Routes */
 Route.post("/users", "UserController.create");
 

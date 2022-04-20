@@ -181,8 +181,6 @@ class RecommendationSystemController {
     const recommendation_system =
       await RecommendationSystemService.getRecommendationSystemByToken(token);
 
-    console.log("recommendation_system", recommendation_system);
-
     if (!recommendation_system)
       return response.status(404).send({ error: "SR TOKEN Not Found" });
 
@@ -286,6 +284,70 @@ class RecommendationSystemController {
     }
 
     return null;
+  }
+
+  async predict({ request, response }) {
+    // const token = request.headers().authorization.split(" ")[1];
+    // console.log('token', token);
+    // if (!token)
+    //   return response.status(404).send({ error: "SR TOKEN Not Found" });
+
+    //   const rules = {
+    //     user_id: "required",
+    //     item_id: "required"
+    //   };
+
+    //   // const validation = await validate(request.all(), rules);
+
+    //   // if (validation.fails()) {
+    //   //   return validation.messages();
+    //   // }
+
+    // const recommendation_system = await RecommendationSystemService.getRecommendationSystemByToken(token);
+
+    return { predict: 4 };
+  }
+
+  async recommendByItem({ request, response }) {
+    const token = request.headers().authorization.split(" ")[1];
+    if (!token)
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
+
+    const recommendation_system =
+      await RecommendationSystemService.getRecommendationSystemByToken(token);
+
+    if (!recommendation_system)
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
+
+    const { item_id, limit } = request.body;
+
+    const result = await RecommendationSystemService.getRecommendationRandom(
+      recommendation_system.id,
+      parseInt(limit)
+    );
+
+    return result;
+  }
+
+  async recommendByUser({ request, response }) {
+    const token = request.headers().authorization.split(" ")[1];
+    if (!token)
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
+
+    const recommendation_system =
+      await RecommendationSystemService.getRecommendationSystemByToken(token);
+
+    if (!recommendation_system)
+      return response.status(404).send({ error: "SR TOKEN Not Found" });
+
+    const { user_id, limit } = request.body;
+
+    const result = await RecommendationSystemService.getRecommendationRandom(
+      recommendation_system.id,
+      parseInt(limit)
+    );
+
+    return result;
   }
 }
 

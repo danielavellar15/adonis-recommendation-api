@@ -14,7 +14,6 @@ class RecommendationSystemService {
   }
 
   static async getRecommendationSystemByToken(token) {
-    console.log("aaaa");
     const recommendation_system = await Database.from("recommendation_systems")
       .where({
         token: token,
@@ -22,6 +21,26 @@ class RecommendationSystemService {
       .first();
 
     return recommendation_system;
+  }
+
+  static async getRecommendationRandom(recommendation_system_id, limit) {
+    const items = await Database.from("items").where({
+      recommendation_system_id: recommendation_system_id,
+    });
+
+    let listItensRecommendation = [];
+    for (let i = 0; i < limit; i++) {
+      const randomNumber = this.getRandomInt(0, items.length);
+      listItensRecommendation.push(items[randomNumber]);
+    }
+
+    return listItensRecommendation;
+  }
+
+  static getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
   }
 }
 
